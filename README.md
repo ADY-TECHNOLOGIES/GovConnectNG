@@ -1,120 +1,90 @@
-# React + Vite + shadcn/ui Starter Template
+# 🇳🇬 GovConnect NG
 
-A modern React starter template built with Vite, TypeScript, Tailwind CSS, and shadcn/ui components.
+### Citizen Reporting & Public Service Platform
 
-## 🚀 Features
+GovConnect NG is a Nigerian civic technology platform designed to connect citizens with government and make public services more accessible, transparent, and responsive.
 
-- ⚡️ **Vite** - Fast build tool and development server
-- ⚛️ **React 18** - Latest React with hooks support
-- 🎯 **TypeScript** - Type safety and better developer experience
-- 🎨 **Tailwind CSS** - Utility-first CSS framework
-- 🧩 **shadcn/ui** - Beautifully designed components built with Radix UI
-- 📦 **Path Mapping** - Clean imports with `@/` prefix
-
-## 📦 Included shadcn/ui Components
-
-- Button
-- Card
-- Input
-- Label
-- Badge
-- Dialog
-- And more...
-
-## 🛠️ Getting Started
-
-1. **Install dependencies**
-
-   ```bash
-   npm install
-   ```
-
-2. **Start development server**
-
-   ```bash
-   npm run dev
-   ```
-
-3. **Build for production**
-
-   ```bash
-   npm run build
-   ```
-
-4. **Preview production build**
-   ```bash
-   npm run preview
-   ```
-
-## 📁 Project Structure
-
-```
-src/
-├── components/
-│   └── ui/              # shadcn/ui components
-├── lib/
-│   └── utils.ts         # Utility functions
-├── App.tsx              # Main application component
-├── index.css            # Global styles with Tailwind
-└── main.tsx             # Application entry point
-```
-
-## 🎨 Customization
-
-### Adding New shadcn/ui Components
-
-This template is pre-configured with shadcn/ui. You can add more components by creating them in the `src/components/ui/` directory.
-
-### Tailwind Configuration
-
-The Tailwind configuration is set up with shadcn/ui color variables. You can customize colors and other design tokens in:
-
-- `tailwind.config.js` - Tailwind configuration
-- `src/index.css` - CSS custom properties for themes
-
-### TypeScript Configuration
-
-Path mapping is configured for clean imports:
-
-```typescript
-import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
-```
-
-## 🌗 Dark Mode
-
-The template includes dark mode support through Tailwind's `dark:` classes and CSS custom properties.
-
-## 📚 Learn More
-
-- [Vite Documentation](https://vitejs.dev/)
-- [React Documentation](https://react.dev/)
-- [Tailwind CSS](https://tailwindcss.com/)
-- [shadcn/ui](https://ui.shadcn.com/)
-- [Radix UI](https://www.radix-ui.com/)
-
-## 🤝 Contributing
-
-Feel free to submit issues and enhancement requests!
-
-**⚡ Powered by [Dala](https://dala.gebeya.com)** - The AI-powered web development platform that helps you build full-stack applications faster.
+The platform enables citizens to report community problems, access government service information, track submitted reports, and engage with public institutions.
 
 ---
 
-## 🤖 What is Dala?
+## 🎯 The Problem
 
-**[Gebeya Dala](https://dala.gebeya.com)** is an intelligent web development platform that accelerates your React development workflow. Build, preview, and deploy web applications, and instant development environments.
+Citizens often face challenges when interacting with government services, including:
 
-🔗 **Try Dala:** [dala.gebeya.com](https://dala.gebeya.com)
+- Long queues at government offices
+- Limited information about public services
+- Difficulty reporting problems in their communities
+- Poor visibility into the progress of complaints
+- Lack of transparency in public service delivery
+- Difficulty locating government offices and services
+- Limited communication between citizens and local government
 
-### Why Use Dala?
-
-- **AI-Powered Development** - Get intelligent code suggestions and automated component generation
-- **Instant Preview** - See your changes live in real-time sandbox environments
-- **Zero Setup** - No local environment configuration needed
-- **Collaborative** - Build and share projects with your team
-- **Deployment Ready** - One-click deployment to production
+GovConnect NG is designed to help address these challenges through a single digital platform.
 
 ---
 
-Built with ❤️ by the Dala team to help developers build faster and smarter.
+## 💡 Our Solution
+
+GovConnect NG provides a centralized platform where citizens can:
+
+- 📝 Report community problems
+- 📍 Share the location of reported issues
+- 📷 Upload evidence such as photographs
+- 🔎 Track the status of submitted reports
+- 🏛️ Find government services and offices
+- 📅 Access appointment and service information
+- 🗺️ View reported community issues on a map
+- 📊 Monitor community service performance
+- 🤝 Communicate with relevant authorities
+
+---
+
+## 🚀 Key Features
+
+### Citizen Reporting
+
+Citizens can report issues such as:
+
+- Bad roads
+- Damaged infrastructure
+- Water supply problems
+- Waste management issues
+- Broken streetlights
+- Flooding
+- Drainage problems
+- Public facility problems
+- Environmental issues
+- Other community concerns
+
+Each report can include:
+
+- Description
+- Category
+- Location
+- Photograph/evidence
+- Priority
+- Report status
+
+---
+
+### 📍 Location-Based Reporting
+
+Reports can be associated with geographic locations so that authorities can identify where problems are occurring.
+
+---
+
+### 🔎 Report Tracking
+
+Citizens can follow the progress of their reports:
+
+```text
+Submitted
+    ↓
+Under Review
+    ↓
+Assigned
+    ↓
+In Progress
+    ↓
+Resolved

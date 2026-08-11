@@ -1,17 +1,17 @@
 {
-  "name": "react-starter-template",
+  "name": "govconnect-ng",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.0.0",
+  "description": "GovConnect NG - A citizen reporting and public service platform connecting Nigerians with government.",
+  "author": "Anas Dalhatu Yahuza - ADY Technologies",
+  "license": "MIT",
   "type": "module",
   "scripts": {
     "dev": "vite --host --port 3000",
     "build": "tsc -b && vite build",
     "typecheck": "tsc --noEmit",
     "lint": "eslint .",
-    "preview": "vite preview --host",
-    "build:watch": "vite build --watch > build.log 2>&1",
-    "watch:errors": "node dala-internal-watch-build-errors.js",
-    "preview:dev": "concurrently \"npm run watch:errors\""
+    "preview": "vite preview --host"
   },
   "packageManager": "bun@1.2.22",
   "dependencies": {
