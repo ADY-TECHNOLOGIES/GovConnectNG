@@ -5,6 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { toast } from "sonner";
 
 import {
   User,
@@ -16,6 +17,9 @@ import {
   Building2,
   LogOut,
   ArrowRight,
+  Pencil,
+  Camera,
+  Loader2,
 } from "lucide-react";
 
 interface Report {
@@ -29,10 +33,15 @@ interface Report {
 
 const Profile = () => {
   const navigate = useNavigate();
-  const { user, logout } = useAuth();
+  const {
+    user,
+    logout,
+    updateAvatar,
+  } = useAuth();
 
   const [reports, setReports] = useState<Report[]>([]);
   const [loading, setLoading] = useState(true);
+  const [avatarUploading, setAvatarUploading] = useState(false);
 
   const [stats, setStats] = useState({
     total: 0,
@@ -44,6 +53,34 @@ const Profile = () => {
   useEffect(() => {
     loadProfile();
   }, []);
+
+  const handleAvatarChange = async (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const file = e.target.files?.[0];
+  
+    if (!file) return;
+  
+    setAvatarUploading(true);
+  
+    try {
+      const result = await updateAvatar(file);
+  
+      if (result?.error) {
+        toast.error(result.error);
+        return;
+      }
+  
+      toast.success("Profile picture updated successfully!");
+    } catch (error) {
+      console.error("Avatar change error:", error);
+  
+      toast.error("Unable to update profile picture.");
+    } finally {
+      setAvatarUploading(false);
+      e.target.value = "";
+    }
+  };
 
   const loadProfile = async () => {
     if (!user) return;
@@ -95,9 +132,83 @@ const Profile = () => {
     
               <div className="flex flex-col md:flex-row items-center gap-6">
     
-                <div className="w-24 h-24 rounded-full bg-white text-green-700 flex items-center justify-center text-3xl font-bold shadow-lg">
-                  {initials}
-                </div>
+              <div className="relative">
+  <div
+    style={{
+      width: "120px",
+      height: "120px",
+      borderRadius: "50%",
+      overflow: "hidden",
+      background: "white",
+      border: "4px solid white",
+      position: "relative",
+    }}
+  >
+    {user?.avatar_url ? (
+      <img
+        src={user.avatar_url}
+        alt="Profile"
+        style={{
+          width: "100%",
+          height: "100%",
+          objectFit: "cover",
+          display: "block",
+        }}
+      />
+    ) : (
+      <div
+        style={{
+          width: "100%",
+          height: "100%",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          fontSize: "32px",
+          fontWeight: "bold",
+          color: "green",
+        }}
+      >
+        {initials}
+      </div>
+    )}
+  </div>
+
+  <label
+    htmlFor="avatar-upload"
+    style={{
+      position: "absolute",
+      right: "0",
+      bottom: "0",
+      width: "36px",
+      height: "36px",
+      borderRadius: "50%",
+      background: "white",
+      color: "green",
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      cursor: avatarUploading ? "not-allowed" : "pointer",
+      boxShadow: "0 2px 8px rgba(0,0,0,0.25)",
+      opacity: avatarUploading ? 0.6 : 1,
+    }}
+  >
+    {avatarUploading ? (
+      <Loader2 size={18} className="animate-spin" />
+    ) : (
+      <Camera size={18} />
+    )}
+  </label>
+
+  <input
+    id="avatar-upload"
+    type="file"
+    accept="image/jpeg,image/png,image/webp"
+    className="hidden"
+    onChange={handleAvatarChange}
+    disabled={avatarUploading}
+  />
+</div>
+
     
                 <div className="flex-1 text-center md:text-left">
     
@@ -130,6 +241,15 @@ const Profile = () => {
       })
     : "Recently"}
 </p>
+
+<Button
+  onClick={() => navigate("/profile/edit")}
+  className="mt-5 bg-white text-green-700 hover:bg-green-50 rounded-xl font-semibold"
+>
+  <Pencil className="mr-2" size={18} />
+  Edit Profile
+</Button>
+
     
                 </div>
     

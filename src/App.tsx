@@ -10,6 +10,7 @@ import Register from "./pages/Auth/Register";
 import ForgotPassword from "./pages/Auth/ForgotPassword";
 import OTPVerification from "./pages/Auth/OTPVerification";
 import CompleteProfile from "./pages/Auth/CompleteProfile";
+import EditProfile from "./pages/Auth/EditProfile";
 
 import Home from "./pages/Home";
 import Reports from "./pages/Reports";
@@ -24,23 +25,104 @@ import AdminReportDetails from "./pages/admin/AdminReportDetails";
 
 import { Toaster } from "sonner";
 
-/* ---------------- PUBLIC ROUTE ---------------- */
+/* =========================================================
+   LOADING SCREEN
+========================================================= */
 
-const PublicRoute = ({ children }: { children: React.ReactNode }) => {
-  const { user, isLoading, isProfileComplete } = useAuth();
+const LoadingScreen = () => {
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-background">
+      <div className="flex flex-col items-center gap-4">
+        <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin" />
+
+        <p className="text-sm text-muted-foreground">
+          Loading GovConnect NG...
+        </p>
+      </div>
+    </div>
+  );
+};
+
+/* =========================================================
+   ROOT REDIRECT
+========================================================= */
+
+const RootRedirect = () => {
+  const {
+    user,
+    isLoading,
+    isProfileComplete,
+  } = useAuth();
 
   if (isLoading) {
+    return <LoadingScreen />;
+  }
+
+  /* No authenticated user */
+  if (!user) {
+    return <Splash />;
+  }
+
+  /* Authenticated but profile incomplete */
+  if (!isProfileComplete) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-background">
-        <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
-      </div>
+      <Navigate
+        to="/complete-profile"
+        replace
+      />
     );
   }
 
+  /* Authenticated user */
+  if (user.role === "admin") {
+    return (
+      <Navigate
+        to="/admin"
+        replace
+      />
+    );
+  }
+
+  return (
+    <Navigate
+      to="/home"
+      replace
+    />
+  );
+};
+
+/* =========================================================
+   PUBLIC ROUTE
+========================================================= */
+
+const PublicRoute = ({
+  children,
+}: {
+  children: React.ReactNode;
+}) => {
+  const {
+    user,
+    isLoading,
+    isProfileComplete,
+  } = useAuth();
+
+  if (isLoading) {
+    return <LoadingScreen />;
+  }
+
+  /*
+   * If authenticated but profile is incomplete,
+   * allow the authentication flow to send the
+   * user to Complete Profile.
+   */
   if (user && isProfileComplete) {
     return (
       <Navigate
-        to={user.role === "admin" ? "/admin" : "/home"}
+        to={
+          user.role === "admin"
+            ? "/admin"
+            : "/home"
+        }
         replace
       />
     );
@@ -49,91 +131,140 @@ const PublicRoute = ({ children }: { children: React.ReactNode }) => {
   return <>{children}</>;
 };
 
-/* ---------------- PROTECTED ROUTE ---------------- */
+/* =========================================================
+   PROTECTED ROUTE
+========================================================= */
 
-const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
-  const { user, isLoading, isProfileComplete } = useAuth();
+const ProtectedRoute = ({
+  children,
+}: {
+  children: React.ReactNode;
+}) => {
+  const {
+    user,
+    isLoading,
+    isProfileComplete,
+  } = useAuth();
 
   if (isLoading) {
+    return <LoadingScreen />;
+  }
+
+  /* Not authenticated */
+  if (!user) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-background">
-        <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
-      </div>
+      <Navigate
+        to="/login"
+        replace
+      />
     );
   }
 
-  if (!user) {
-    return <Navigate to="/login" replace />;
-  }
-
+  /* Profile incomplete */
   if (!isProfileComplete) {
-    return <Navigate to="/complete-profile" replace />;
+    return (
+      <Navigate
+        to="/complete-profile"
+        replace
+      />
+    );
   }
 
   return <>{children}</>;
 };
 
-/* ---------------- PROFILE ROUTE ---------------- */
+/* =========================================================
+   PROFILE / COMPLETE PROFILE ROUTE
+========================================================= */
 
 const ProtectedRouteNoProfile = ({
   children,
 }: {
   children: React.ReactNode;
 }) => {
-  const { user, isLoading } = useAuth();
+  const {
+    user,
+    isLoading,
+  } = useAuth();
 
   if (isLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-background">
-        <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
-      </div>
-    );
+    return <LoadingScreen />;
   }
 
   if (!user) {
-    return <Navigate to="/login" replace />;
+    return (
+      <Navigate
+        to="/login"
+        replace
+      />
+    );
   }
 
   return <>{children}</>;
 };
 
-/* ---------------- ADMIN ROUTE ---------------- */
+/* =========================================================
+   ADMIN ROUTE
+========================================================= */
 
-const AdminRoute = ({ children }: { children: React.ReactNode }) => {
-  const { user, isLoading } = useAuth();
+const AdminRoute = ({
+  children,
+}: {
+  children: React.ReactNode;
+}) => {
+  const {
+    user,
+    isLoading,
+  } = useAuth();
 
   if (isLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        Loading...
-      </div>
-    );
+    return <LoadingScreen />;
   }
 
   if (!user) {
-    return <Navigate to="/login" replace />;
+    return (
+      <Navigate
+        to="/login"
+        replace
+      />
+    );
   }
 
   if (user.role !== "admin") {
-    return <Navigate to="/home" replace />;
+    return (
+      <Navigate
+        to="/home"
+        replace
+      />
+    );
   }
 
   return <>{children}</>;
 };
 
-/* ---------------- APP ---------------- */
+/* =========================================================
+   APP
+========================================================= */
 
 function App() {
   return (
     <AuthProvider>
       <BrowserRouter>
-
         <Routes>
 
-          {/* Splash */}
-          <Route path="/" element={<Splash />} />
+          {/* =================================================
+              ROOT
+          ================================================= */}
 
-          {/* Public */}
+          <Route
+            path="/"
+            element={<RootRedirect />}
+          />
+
+          {/* =================================================
+              PUBLIC AUTH ROUTES
+          ================================================= */}
+
           <Route
             path="/welcome"
             element={
@@ -179,7 +310,9 @@ function App() {
             }
           />
 
-          {/* Complete Profile */}
+          {/* =================================================
+              COMPLETE PROFILE
+          ================================================= */}
 
           <Route
             path="/complete-profile"
@@ -190,7 +323,9 @@ function App() {
             }
           />
 
-          {/* Protected */}
+          {/* =================================================
+              PROTECTED APPLICATION
+          ================================================= */}
 
           <Route
             element={
@@ -199,19 +334,60 @@ function App() {
               </ProtectedRoute>
             }
           >
-            <Route path="/home" element={<Home />} />
 
-            <Route path="/reports" element={<Reports />} />
+            {/* USER HOME */}
 
-            <Route path="/reports/new" element={<NewReport />} />
+            <Route
+              path="/home"
+              element={<Home />}
+            />
 
-            <Route path="/reports/:id" element={<ReportDetails />} />
+            {/* REPORTS */}
 
-            <Route path="/services" element={<Services />} />
+            <Route
+              path="/reports"
+              element={<Reports />}
+            />
 
-            <Route path="/notifications" element={<Notifications />} />
+            <Route
+              path="/reports/new"
+              element={<NewReport />}
+            />
 
-            <Route path="/profile" element={<Profile />} />
+            <Route
+              path="/reports/:id"
+              element={<ReportDetails />}
+            />
+
+            {/* SERVICES */}
+
+            <Route
+              path="/services"
+              element={<Services />}
+            />
+
+            {/* NOTIFICATIONS */}
+
+            <Route
+              path="/notifications"
+              element={<Notifications />}
+            />
+
+            {/* PROFILE */}
+
+            <Route
+              path="/profile"
+              element={<Profile />}
+            />
+
+            <Route
+              path="/profile/edit"
+              element={<EditProfile />}
+            />
+
+            {/* =================================================
+                ADMIN
+            ================================================= */}
 
             <Route
               path="/admin"
@@ -230,18 +406,29 @@ function App() {
                 </AdminRoute>
               }
             />
+
           </Route>
 
-          {/* Catch All */}
+          {/* =================================================
+              CATCH ALL
+          ================================================= */}
 
           <Route
             path="*"
-            element={<Navigate to="/" replace />}
+            element={
+              <Navigate
+                to="/"
+                replace
+              />
+            }
           />
 
         </Routes>
 
-        <Toaster position="top-center" richColors />
+        <Toaster
+          position="top-center"
+          richColors
+        />
 
       </BrowserRouter>
     </AuthProvider>
